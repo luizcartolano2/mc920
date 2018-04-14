@@ -96,6 +96,7 @@ class ManageImage(object):
 
         return areas
 
+    """ Method to classify the regions of an images """
     def classifyRegions(self, areas):
         small = medium = big = 0
 
@@ -120,3 +121,20 @@ class ManageImage(object):
         f.write('number of big regions:' + str(big) + '\n')
 
         f.close()
+
+    """ Method to plot the histogram of images objects """
+    def createHistogram(self,areas):
+        plt.xlabel('Area')
+        plt.ylabel('Number of Objects')
+        plt.title('Histogram of Objects Area')
+        max_area = max(areas)
+        if max_area < 3000:
+            max_area = 3000
+        plt.xlim([0, max_area])
+        classified_regions, bins, patches = plt.hist(areas, bins=[0, 1500, 3000, max_area], rwidth=0.5, facecolor='blue', edgecolor='black')
+        yMax = classified_regions[0]
+        plt.ylim([0, yMax])
+        # determine the path where we are going to save our histogram
+        path = '/Users/luizeduardocartolano/Dropbox/DUDU/Unicamp/IC/MC920/workspace/proj1/histograms/'
+        filepath = os.path.join(path, self.filename)
+        plt.savefig(filepath)

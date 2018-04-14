@@ -16,6 +16,7 @@ def main():
         contour_img, binary_img = manager.contourObjetcts(image, gray_img)
         areas = manager.imageProperties(binary_img, gray_img)
         manager.classifyRegions(areas)
+        manager.createHistogram(areas)
 
 
 if __name__ == '__main__':
