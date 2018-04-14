@@ -50,6 +50,7 @@ class ManageImage(object):
         filename = path + self.filename
         cv2.imwrite(filename, image_matrix)
 
+    """ Method to find the properties of an images """
     def imageProperties(self, thresh, image):
         cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnts = cnts[0] if imutils.is_cv2() else cnts[1]
@@ -59,11 +60,10 @@ class ManageImage(object):
         i = 0
         for c in cnts:
 
-            areas.append(cv2.contourArea(c))
-            perimeters.append(cv2.arcLength(c,True))
-
             # compute the center of the contour
             M = cv2.moments(c)
+            areas.append(cv2.contourArea(c))
+            perimeters.append(cv2.arcLength(c,True))
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
 
@@ -91,5 +91,32 @@ class ManageImage(object):
             f.write("Perimeter: " + str(areas[i]) + ' ')
             f.write("Área: " + str(perimeters[i]) + ' ')
             f.write('\n')
+
+        f.close()
+
+        return areas
+
+    def classifyRegions(self, areas):
+        small = medium = big = 0
+
+        for area in areas:
+            if area < 1500:
+                small = small + 1
+            elif area >= 3000:
+                big = big + 1
+            else:
+                medium = medium + 1
+
+        # replace the .png to .txt at the filename
+        filename = self.filename.replace(".png",".txt")
+
+        # open the file where we are going to write
+        path = '/Users/luizeduardocartolano/Dropbox/DUDU/Unicamp/IC/MC920/workspace/proj1/classifiedRegions/'
+        filepath = os.path.join(path, filename)
+        f = open(filepath,"w+")
+
+        f.write('number of small regions:' + str(small) + '\n')
+        f.write('number of medium regions:' + str(medium) + '\n')
+        f.write('number of big regions:' + str(big) + '\n')
 
         f.close()

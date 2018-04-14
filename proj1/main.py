@@ -2,7 +2,6 @@ import os
 from manageImage import ManageImage
 
 def main():
-
     path = '/Users/luizeduardocartolano/Dropbox/DUDU/Unicamp/IC/MC920/workspace/objectsImage/'
     # filename = str(input("Enter the image name: "))
 
@@ -15,8 +14,8 @@ def main():
         gray_img = manager.convertToGray(image)
         # here we contour the objects
         contour_img, binary_img = manager.contourObjetcts(image, gray_img)
-        manager.imageProperties(binary_img, gray_img)
-
+        areas = manager.imageProperties(binary_img, gray_img)
+        manager.classifyRegions(areas)
 
 
 if __name__ == '__main__':

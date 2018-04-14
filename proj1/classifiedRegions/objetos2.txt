@@ -1,0 +1,3 @@
+number of small regions:50
+number of medium regions:7
+number of big regions:1
