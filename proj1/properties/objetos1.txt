@@ -1,0 +1,18 @@
+Number of regions: 17
+Region: 0 Perimeter: 240.0 Área: 62.0 
+Region: 1 Perimeter: 2256.0 Área: 190.0 
+Region: 2 Perimeter: 2209.0 Área: 188.0 
+Region: 3 Perimeter: 240.0 Área: 62.0 
+Region: 4 Perimeter: 256.0 Área: 64.0 
+Region: 5 Perimeter: 2256.0 Área: 190.0 
+Region: 6 Perimeter: 2256.0 Área: 190.0 
+Region: 7 Perimeter: 256.0 Área: 64.0 
+Region: 8 Perimeter: 256.0 Área: 64.0 
+Region: 9 Perimeter: 2256.0 Área: 190.0 
+Region: 10 Perimeter: 256.0 Área: 64.0 
+Region: 11 Perimeter: 240.0 Área: 62.0 
+Region: 12 Perimeter: 2209.0 Área: 188.0 
+Region: 13 Perimeter: 240.0 Área: 62.0 
+Region: 14 Perimeter: 240.0 Área: 62.0 
+Region: 15 Perimeter: 2256.0 Área: 190.0 
+Region: 16 Perimeter: 2256.0 Área: 190.0 
