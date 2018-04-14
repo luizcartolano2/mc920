@@ -1,0 +1,6 @@
+Width: 512
+Height: 512
+Minimum level of intensity: 16
+Maximum level of intensity: 235
+Average level of intensity: 112.20343399047852
+
