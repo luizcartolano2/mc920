@@ -5,6 +5,6 @@ Working with image process
 Luiz Eduardo Cartolano   
 
 ## Quotes
-Intelligence is the ability to avoid doing work, yet getting work done. 
---Linus Torvalds
+"Do, or do not. There is no try."
+--Yoda
 
