@@ -63,7 +63,7 @@ def main():
         #   Leitura dos argumentos de entrada   #
         #########################################
         # leitura da imagem a ser decodificada
-        imageInput = raw_input("Insert the input image filename:")
+        imageInput = raw_input("Insert the input image filename: \n")
         imageInput = pathOut + imageInput
 
         # plane of the modified bit
