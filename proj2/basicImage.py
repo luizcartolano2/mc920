@@ -2,8 +2,22 @@ import cv2
 import numpy as np
 from matplotlib.pyplot import imshow, show
 
-""" Method to read an image """
 def readImage(filename):
+	 """
+	 	Method to read an image
+
+	    Parameters
+	    ----------
+		    filename : str
+		        The file location of the image
+
+	    Returns
+	    -------
+		    list
+		        A list of ints with the matrix of pixels of the image
+
+    """
+
 	# path to the file
 	filename = filename
 	# read the image
@@ -11,11 +25,42 @@ def readImage(filename):
 	# return the image readed
 	return image_matrix
 
-""" Method to store new modified images """
 def storeImage(filename, image_matrix):
+	"""
+
+		Method to store new images
+
+	    Parameters
+	    ----------
+		    filename : str
+		        The file location of the image
+		    image_matrix : list
+		    	A list of ints with the matrix of pixels of the image
+
+	    Returns
+	    -------
+		    Nothing
+    
+    """
+
 	cv2.imwrite(filename, image_matrix)
 
 def writePlans(img):
+	"""
+
+		Method to show specific planes of the image
+
+	    Parameters
+	    ----------
+		    img : list
+		    	A list of ints with the matrix of pixels of the image
+
+	    Returns
+	    -------
+		    Nothing
+    
+    """
+
 	first_plane = np.empty(img.shape)
 	second_plane = np.empty(img.shape)
 	third_plane = np.empty(img.shape)
