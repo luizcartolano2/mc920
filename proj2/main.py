@@ -11,7 +11,6 @@ def main():
     
     operation = raw_input("Insert the operation to be made: \n")
     if operation == "codificar":
-        print("Codificando a imagem: ")
         #########################################
         #   Leitura dos argumentos de entrada   #
         #########################################
@@ -60,7 +59,22 @@ def main():
         # writePlans(encodedImgMatrix)
 
     elif operation == "decodificar":
-        print("Decodificando")
+        #########################################
+        #   Leitura dos argumentos de entrada   #
+        #########################################
+        # leitura da imagem a ser decodificada
+        imageInput = raw_input("Insert the input image filename:")
+        imageInput = pathOut + imageInput
+
+        # plane of the modified bit
+        bitPlane = input("Insert the bit plane you want to modify: \n")
+
+        # output text
+        txtOutput = raw_input("Insert the filename where you want to save the text: \n")
+        txtOutput = pathOut + txtOutput
+
+
+
     else: 
         print("Operation not supported!")
 
