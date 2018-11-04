@@ -1,6 +1,7 @@
 import os
-from basicImage import readImage, storeImage
+from basicImage import readImage, storeImage, writePlans
 from basicText import txtToBin, changeNewLine
+from esteganografia import encodeImage, decodeImage
 
 def main():
     # path para a pasta
@@ -10,6 +11,7 @@ def main():
     
     operation = raw_input("Insert the operation to be made: \n")
     if operation == "codificar":
+        print("Codificando a imagem: ")
         #########################################
         #   Leitura dos argumentos de entrada   #
         #########################################
@@ -32,9 +34,11 @@ def main():
         #    Leitura dos arquivos de entrada    #
         #########################################
         #   conversao da imagem para a matrix que a representa
+        print("Lendo a imagem:")
         imageMatrix = readImage(imageInput)
         
         #   eliminamos as quebras de linha do arquivo texto
+        print("Eliminando espaco e caracteres especiais do texto a ser codificado:")
         changeNewLine(txtInput, txtInput)
 
         #   conversao do texto (escrito) para binario
@@ -43,6 +47,17 @@ def main():
         ####################################
         #    Codifica o texto na imagem    #
         ####################################
+        print("Codificando o texto na imagem:")
+        encodedImgMatrix = encodeImage(imageMatrix, binText, bitPlane)
+
+        ###############################
+        #    Armazena a nova image    #
+        ###############################
+        print("Armazenando imagem modificada:")
+        storeImage(imageOutput, encodedImgMatrix)
+
+        # debug
+        # writePlans(encodedImgMatrix)
 
     elif operation == "decodificar":
         print("Decodificando")
