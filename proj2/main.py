@@ -1,6 +1,6 @@
 import os
 from basicImage import readImage, storeImage, writePlans
-from basicText import txtToBin, changeNewLine
+from basicText import txtToBin, changeNewLine, writeText
 from esteganografia import encodeImage, decodeImage
 
 def main():
@@ -73,6 +73,21 @@ def main():
         txtOutput = raw_input("Insert the filename where you want to save the text: \n")
         txtOutput = pathOut + txtOutput
 
+        #########################################
+        #    Leitura dos arquivos de entrada    #
+        #########################################
+        #   conversao da imagem para a matrix que a representa
+        print("Lendo a imagem:")
+        imageMatrix = readImage(imageInput)
+
+        ######################################
+        #    Decodifica o texto da imagem    #
+        ######################################
+        print("Decodificando:")
+        decodedText = decodeImage(imageMatrix, bitPlane)
+
+        print("Escrevendo:")
+        writeText(txtOutput, decodedText)
 
 
     else: 

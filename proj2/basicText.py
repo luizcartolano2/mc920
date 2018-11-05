@@ -24,24 +24,22 @@ def txtToBin(filename):
 
 	return binarray
 
+#########################################################################
+#
+#	Method to eliminate spaces and special characters in a file text.
+#
+#   Parameters
+#    ----------
+#	    originalFile : str
+#	        The file location of the input text
+#	    destFile : str
+#	        The file location of the output text
+#
+#    Returns
+#    -------
+#	    Nothing
+#########################################################################
 def changeNewLine(originalFile, destFile):
-	"""
-
-		Method to eliminate spaces and special characters in a file text.
-
-	    Parameters
-	    ----------
-		    originalFile : str
-		        The file location of the input text
-		    destFile : str
-		        The file location of the output text
-
-	    Returns
-	    -------
-		    Nothing
-    
-    """
-
 
     with open(originalFile, 'r') as myfile:
         data=myfile.read()
