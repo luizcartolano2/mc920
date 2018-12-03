@@ -1,6 +1,6 @@
 import os
-from basicImage import readImage, storeImage
-from imageAlign import houghTransform, rotateImage
+from basicImage import readImage, storeImage, rotateImage
+from imageAlign import houghTransform
 
 def main():
     # paths para a pasta
