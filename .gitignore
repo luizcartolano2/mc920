@@ -8,3 +8,4 @@ proj2/__pycache__/*
 proj3/__pycache__/*
 proj4/__pycache__/*
 *.pyc
+.idea/
