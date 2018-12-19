@@ -1,74 +1,70 @@
 import cv2
 import numpy as np
-from matplotlib.pyplot import imshow, show
+
 
 def readImage(filename):
-	"""
-
-		Method to store new images
-
-	    Parameters
-	    ----------
-		    filename : str
-		        The file location of the image
-	    Returns
-	    -------
-		    img : list
-		    	A list of ints with the matrix of pixels of the image
     """
-	# read the image
-	image_matrix = cv2.imread(filename,1)
-	img = image_matrix.astype(dtype='uint8')
-	# return the image readed
-	return img
+    Method to read new images
+
+    :param filename: The file location of the image
+    :return: img: A list of ints with the matrix of pixels of the image
+
+    """
+    #   read the image
+    try:
+        image_matrix = cv2.imread(filename, 1)
+        img = image_matrix.astype(dtype='uint8')
+    except Exception:
+        return np.array([])
+
+    #   return the image readed
+    return img
+
 
 def storeImage(filename, image_matrix):
-	"""
-
-		Method to store new images
-
-	    Parameters
-	    ----------
-		    filename : str
-		        The file location of the image
-		    image_matrix : list
-		    	A list of ints with the matrix of pixels of the image
-
-	    Returns
-	    -------
-		    Nothing
-    
     """
+    Method to store new images
 
-	cv2.imwrite(filename, image_matrix)
+    :param filename: The file location of the image
+    :param image_matrix: A list of ints with the matrix of pixels of the image
+    :return: None
+
+    """
+    try:
+        cv2.imwrite(filename, image_matrix)
+    except Exception:
+        print("A imagem nao foi salva!")
+
 
 def rotateImage(imgMatrix, rotAngle):
-	"""
-
-		Method to rotate image in a given angle.
-
-	    Parameters
-	    ----------
-		    image_matrix : list
-		    	A list of ints with the matrix of pixels of the image
-			rotAngle : double
-				Image rotation angle
-	    Returns
-	    -------
-		    rotated : list
-		    	A list of ints with the matrix of pixels of the image
     """
 
-	#	pega a altura e largura da imagem
-	height, width = imgMatrix.shape[:2]
-	# 	pega o ponto central da imagem
-	centralPoint = (width / 2, height / 2)
+    :param imgMatrix: A list of ints with the matrix of pixels of the image
+    :param rotAngle: Image rotation angle
+    :return: rotated: A list of ints with the matrix of pixels of the image
 
-	rotation = cv2.getRotationMatrix2D(centralPoint, rotAngle, 1.0)
-	rotated = cv2.warpAffine(imgMatrix, rotation, (width, height))
+    """
+    try:
+        #   pega a altura e largura da imagem
+        height, width = imgMatrix.shape[:2]
 
-	cv2.imshow("Rotacionado ", rotated)
- 
-	cv2.waitKey(0)
+        #   pega o ponto central da imagem
+        centralPoint = (width / 2, height / 2)
 
-	return rotated
+        #   obtem uma matriz de rotacao com base no ponto central dado e no angulo fornecido
+        rotation = cv2.getRotationMatrix2D(centralPoint, rotAngle, 1.0)
+        rotated = cv2.warpAffine(imgMatrix, rotation, (width, height))
+    except Exception as e:
+        return np.array([])
+
+    try:
+        #   exibe a imagem rotacionada
+        cv2.imshow("Rotacionado ", rotated)
+
+        #   aguarda o pressionamento da tecla '0' para destruir a imagem exibida
+        cv2.waitKey(0)
+    except Exception:
+        print("Falha ao mostrar a imagem!")
+
+    #   retorna a matrix da imagem rotacionada
+    return rotated
