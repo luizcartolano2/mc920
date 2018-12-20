@@ -88,8 +88,9 @@ class ManageImage(object):
         f.write("Number of regions: " + str(size) + '\n')
         for i in range(size):
             f.write("Region: " + str(i) + ' ')
-            f.write("Perimeter: " + str(areas[i]) + ' ')
-            f.write("Área: " + str(perimeters[i]) + ' ')
+            f.write("Perimeter: " + str(int(perimeters[i])) + ' ')
+            print(perimeters[i])
+            f.write("Area: " + str(int(areas[i])) + ' ')
             f.write('\n')
 
         f.close()

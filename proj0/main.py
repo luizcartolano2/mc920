@@ -1,10 +1,9 @@
 from manageImage import ManageImage
 import os
 
-def main():
+path = '/Users/luizeduardocartolano/Dropbox/DUDU/Unicamp/IC/MC920/workspace/images/'
 
-    path = '/Users/luizeduardocartolano/Dropbox/DUDU/Unicamp/IC/MC920/workspace/images/'
-    #filename = str(input("Enter the image name: "))
+def main():
 
     for filename in os.listdir(path):
         # invoke the object
