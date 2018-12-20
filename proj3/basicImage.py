@@ -57,14 +57,5 @@ def rotateImage(imgMatrix, rotAngle):
     except Exception as e:
         return np.array([])
 
-    try:
-        #   exibe a imagem rotacionada
-        cv2.imshow("Rotacionado ", rotated)
-
-        #   aguarda o pressionamento da tecla '0' para destruir a imagem exibida
-        cv2.waitKey(0)
-    except Exception:
-        print("Falha ao mostrar a imagem!")
-
     #   retorna a matrix da imagem rotacionada
     return rotated

@@ -1,6 +1,6 @@
 import os
 from basicImage import readImage, storeImage, rotateImage
-from imageAlign import houghTransform
+from imageAlign import houghTransform, horizontalProjection
 from importer import install
 
 
@@ -28,7 +28,8 @@ def main():
         ##################################
         #   tecnica da projecao horizontal
         print("\tAplicando a tecnica da projecao Horizontal:")
-        print("\t\tAngulo calculado pela projecao Horizontal: ")
+        projAngle = horizontalProjection(imageMatrix)
+        print("\t\tAngulo calculado pela projecao Horizontal: " + str(projAngle))
 
         #   tecnica da transformada de Hough
         print("\tAplicando a tecnica da transformada de Hough:")
@@ -41,6 +42,9 @@ def main():
         ############################
         #   salva a imagem pos projecao Horizontal
         print("\tSalvando imagem apos aplicacao da projecao Horizontal: ")
+        projImage = rotateImage(imageMatrix, projAngle)
+        if projImage.size == 0:
+            print("\tFalha ao obter a imagem rotacionada!")
 
         #   salva a imagem pos transformada de Hough
         print("\tSalvando imagem apos aplicacao da transformada de Hough: ")
@@ -52,6 +56,9 @@ def main():
         #####################################
         #   SALVA AS IMAGENS ROTACIONADAS   #
         #####################################
+        #   salva a imagem rotacionada pela projecao horizontal
+        storeImage(pathOutProjHor + filename, projImage)
+
         #   salva a imagem rotacionada pela transformada de Hough
         storeImage(pathOutHough + filename, houghImage)
 
@@ -61,8 +68,8 @@ def main():
 
 if __name__ == '__main__':
     #   download das dependencias usadas no projeto
-    packages = ['opencv-python', 'numpy']
-    for pack in packages:
-        install(pack)
+    # packages = ['opencv-python', 'numpy', 'scikit-image']
+    # for pack in packages:
+    #     install(pack)
 
     main()
