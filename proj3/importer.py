@@ -14,10 +14,14 @@ def install(package):
     if hasattr(pip, 'main'):
         try:
             pip.main(['install', package])
+            return True
         except Exception as e:
             print("Nao foi possivel baixar o pacote " + package + " pois " + str(e))
+            return False
     else:
         try:
             main(['install', package])
+            return True
         except Exception as e:
             print("Nao foi possivel baixar o pacote " + package + " pois " + str(e))
+            return False
