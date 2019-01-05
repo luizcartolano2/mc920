@@ -1,5 +1,12 @@
 from importer import install
+from constants import pathIn, pathOutProjHor, pathOutHough
 import logging
+import os
+import threading
+
+######################
+#   SETA O LOGGER    #
+######################
 logger = logging.getLogger('server_logger')
 logger.setLevel(logging.DEBUG)
 # create file handler which logs even debug messages
@@ -7,6 +14,9 @@ fh = logging.FileHandler('log.log')
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 
+################################
+#   BAIXA OS PACOTES USADOS    #
+################################
 packages = ['numpy', 'opencv-python', 'scikit-image']
 for pack in packages:
     if install(pack):
@@ -14,19 +24,17 @@ for pack in packages:
     else:
         logger.warning("Problemas para instalar o pacote " + pack)
 
-import os
 from basicImage import readImage, storeImage, rotateImage
 from imageAlign import houghTransform, horizontalProjection
-import threading
-
-# paths para a pasta
-pathIn = '/Users/luizeduardocartolano/Dropbox/DUDU/Unicamp/IC/MC920/workspace/imagesInclinadas/'
-pathOutProjHor = '/Users/luizeduardocartolano/Dropbox/DUDU/Unicamp/IC/MC920/workspace/proj3/output/projecaoHorizontal/'
-pathOutHough = '/Users/luizeduardocartolano/Dropbox/DUDU/Unicamp/IC/MC920/workspace/proj3/output/Hough/'
 
 
 def alignImage(filename):
+    """
 
+    :param filename:
+    :return:
+
+    """
     print("Trabalhando com o arquivo: " + filename)
     ##########################
     #   LEITURA DA IMAGEM    #
@@ -101,6 +109,11 @@ def alignImage(filename):
 
 
 def main():
+    """
+
+    :return:
+
+    """
     files = []
     threads = []
 
