@@ -1,7 +1,16 @@
-import cv2
-from numpy import rint
-import matplotlib.pyplot as plt
-import os
+__author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
+__status__  = "terminated"
+__version__ = "1.0"
+__date__    = ""
+
+try:
+    import cv2
+    from numpy import rint
+    import matplotlib.pyplot as plt
+    import os
+except ImportError:
+    raise SystemExit
+
 
 class ManageImage(object):
     """docstring for [object Object]."""

@@ -1,4 +1,12 @@
-import os
+__author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
+__status__  = "terminated"
+__version__ = "1.0"
+__date__    = ""
+
+try:
+    import os
+except ImportError:
+    raise SystemExit
 
 #   paths para a pasta
 PROJ_PATH = os.getcwd()

@@ -1,7 +1,16 @@
-from manageImage import ManageImage
-import os
+__author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
+__status__  = "terminated"
+__version__ = "1.1"
+__date__    = ""
+
+try:
+    from manageImage import ManageImage
+    import os
+except ImportError:
+    raise SystemExit
 
 path = '/Users/luizeduardocartolano/Dropbox/DUDU/Unicamp/IC/MC920/workspace/images/'
+
 
 def main():
 
@@ -18,6 +27,7 @@ def main():
         manager.imageNegative(image)
         # here we change the range color of the image
         manager.convertImageRange(image,120)
+
 
 if __name__ == '__main__':
     main()

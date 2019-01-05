@@ -1,5 +1,13 @@
-import pip
-from pip._internal import main
+__author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
+__status__  = "terminated"
+__version__ = "1.0"
+__date__    = "12 december 2018"
+
+try:
+    import pip
+    from pip._internal import main
+except ImportError:
+    raise SystemExit
 
 
 def install(package):

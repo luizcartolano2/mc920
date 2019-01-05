@@ -1,6 +1,14 @@
-import os
-from manageImage import ManageImage
-import threading
+__author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
+__status__  = "terminated"
+__version__ = "1.0"
+__date__    = ""
+
+try:
+    import os
+    from manageImage import ManageImage
+    import threading
+except ImportError:
+    raise SystemExit
 
 path = '/Users/luizeduardocartolano/Dropbox/DUDU/Unicamp/IC/MC920/workspace/objectsImage/'
 

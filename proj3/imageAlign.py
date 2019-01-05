@@ -1,7 +1,16 @@
-import cv2
-import numpy as np
-import statistics
-import skimage as sk
+__author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
+__status__  = "terminated"
+__version__ = "1.0"
+__date__    = "12 december 2018"
+
+try:
+    import cv2
+    import numpy as np
+    import statistics
+    import skimage as sk
+except ImportError:
+    raise SystemExit
+
 
 def houghTransform(imgMatrix):
     """

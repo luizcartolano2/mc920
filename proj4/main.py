@@ -1,15 +1,18 @@
-import logging
-import os
-import threading
-from importer import install
-from constants import PROJ_PATH, IMAGE_PATH, OUTPUT_PATH, WKS_PATH
+try:
+    import logging
+    import os
+    import threading
+    from importer import install
+    from constants import PROJ_PATH, IMAGE_PATH, OUTPUT_PATH, WKS_PATH
+except ImportError:
+    raise SystemExit
 
 ######################
 #   SETA O LOGGER    #
 ######################
 logger = logging.getLogger('log_logger')
 logger.setLevel(logging.DEBUG)
-# create file handler which logs even debug messages
+#   cria um manipulador de arquivos que registra mensagens de depuração
 fh = logging.FileHandler('log.log')
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
@@ -26,7 +29,10 @@ for package in packages:
 
 
 #   importa as funcoes dos demais arquivos
-from basicImage import readImage, storeImage
+try:
+    from basicImage import readImage, storeImage
+except ImportError:
+    raise SystemExit
 
 
 def main():

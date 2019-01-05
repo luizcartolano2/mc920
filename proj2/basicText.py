@@ -1,4 +1,12 @@
-import re
+__author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
+__status__  = "terminated"
+__version__ = "1.0"
+__date__    = ""
+
+try:
+    import re
+except ImportError:
+    raise SystemExit
 
 
 def txtToBin(filename):

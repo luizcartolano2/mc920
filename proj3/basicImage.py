@@ -1,5 +1,13 @@
-import cv2
-import numpy as np
+__author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
+__status__  = "production"
+__version__ = "1.1"
+__date__    = "12 december 2018"
+
+try:
+    import cv2
+    import numpy as np
+except ImportError:
+    raise SystemExit
 
 
 def readImage(filename):

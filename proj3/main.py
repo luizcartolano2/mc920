@@ -1,8 +1,16 @@
-from importer import install
-from constants import pathIn, pathOutProjHor, pathOutHough
-import logging
-import os
-import threading
+__author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
+__status__  = "terminated"
+__version__ = "1.3"
+__date__    = "12 december 2018"
+
+try:
+    from importer import install
+    from constants import pathIn, pathOutProjHor, pathOutHough
+    import logging
+    import os
+    import threading
+except ImportError:
+    raise SystemExit
 
 ######################
 #   SETA O LOGGER    #
@@ -24,8 +32,11 @@ for pack in packages:
     else:
         logger.warning("Problemas para instalar o pacote " + pack)
 
-from basicImage import readImage, storeImage, rotateImage
-from imageAlign import houghTransform, horizontalProjection
+try:
+    from basicImage import readImage, storeImage, rotateImage
+    from imageAlign import houghTransform, horizontalProjection
+except ImportError:
+    raise SystemExit
 
 
 def alignImage(filename):

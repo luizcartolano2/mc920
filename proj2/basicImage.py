@@ -1,6 +1,14 @@
-import cv2
-import numpy as np
-from matplotlib.pyplot import imshow, show
+__author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
+__status__  = "production"
+__version__ = "1.0"
+__date__    = ""
+
+try:
+    import cv2
+    import numpy as np
+    from matplotlib.pyplot import imshow, show
+except ImportError:
+    raise SystemExit
 
 
 def readImage(filename):
