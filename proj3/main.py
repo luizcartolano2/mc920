@@ -5,7 +5,7 @@ __date__    = "12 december 2018"
 
 try:
     from importer import install
-    from constants import pathIn, pathOutProjHor, pathOutHough
+    from constants import PATH_IN, PATH_OUT_HOR, PATH_OUT_HOUGH
     import logging
     import os
     import threading
@@ -33,13 +33,13 @@ for pack in packages:
         logger.warning("Problemas para instalar o pacote " + pack)
 
 try:
-    from basicImage import readImage, storeImage, rotateImage
-    from imageAlign import houghTransform, horizontalProjection
+    from basicImage import read_image, store_image, rotate_image
+    from imageAlign import hough_transform, horizontal_projection
 except ImportError:
     raise SystemExit
 
 
-def alignImage(filename):
+def align_image(filename):
     """
 
     :param filename:
@@ -52,8 +52,8 @@ def alignImage(filename):
     ##########################
     #   conversao da imagem para a matrix que a representa
     print("\tLendo a imagem:")
-    imageMatrix = readImage(pathIn + filename)
-    if imageMatrix.size == 0:
+    image_matrix = read_image(PATH_IN + filename)
+    if image_matrix.size == 0:
         logger.warning(filename + ' nao foi lido corretamente!')
         return
     else:
@@ -64,28 +64,28 @@ def alignImage(filename):
     ##################################
     #   tecnica da projecao horizontal
     print("\tAplicando a tecnica da projecao Horizontal:")
-    projAngle = horizontalProjection(imageMatrix)
-    if projAngle is None:
+    proj_angle = horizontal_projection(image_matrix)
+    if proj_angle is None:
         logger.warning(filename + " falha ao aplicar a tecnica da projecao horizontal.")
         return
-    logger.info("Angulo calculado pela projecao Horizontal: " + str(projAngle) + " para o arquivo: " + filename)
+    logger.info("Angulo calculado pela projecao Horizontal: " + str(proj_angle) + " para o arquivo: " + filename)
 
     #   tecnica da transformada de Hough
     print("\tAplicando a tecnica da transformada de Hough:")
     #   pega o angulo a ser transformado
-    houghAngle = houghTransform(imageMatrix)
-    if houghAngle is None:
+    hough_angle = hough_transform(image_matrix)
+    if hough_angle is None:
         logger.warning(filename + " falha ao aplicar a tecnica da transformada de hough.")
         return
-    logger.info("Angulo calculado pela transformada de Hough: " + str(houghAngle) + " para o arquivo: " + filename)
+    logger.info("Angulo calculado pela transformada de Hough: " + str(hough_angle) + " para o arquivo: " + filename)
 
     ############################
     #   ROTACIONA AS IMAGENS   #
     ############################
     #   salva a imagem pos projecao Horizontal
     print("\tSalvando imagem apos aplicacao da projecao Horizontal: ")
-    projImage = rotateImage(imageMatrix, projAngle)
-    if projImage.size == 0:
+    proj_image = rotate_image(image_matrix, proj_angle)
+    if proj_image.size == 0:
         logger.warning(filename + ' nao foi rotacionado corretamente pela projecao horizontal.')
         return
     else:
@@ -93,8 +93,8 @@ def alignImage(filename):
 
     #   salva a imagem pos transformada de Hough
     print("\tSalvando imagem apos aplicacao da transformada de Hough: ")
-    houghImage = rotateImage(imageMatrix, houghAngle)
-    if houghImage.size == 0:
+    hough_image = rotate_image(image_matrix, hough_angle)
+    if hough_image.size == 0:
         logger.warning(filename + ' nao foi rotacionado corretamente pela transformacao de Hough.')
         return
     else:
@@ -104,13 +104,13 @@ def alignImage(filename):
     #   SALVA AS IMAGENS ROTACIONADAS   #
     #####################################
     #   salva a imagem rotacionada pela projecao horizontal
-    if not storeImage(pathOutProjHor + filename, projImage):
+    if not store_image(PATH_OUT_HOR + filename, proj_image):
         logger.warning(filename + " nao foi salvo corretamente apos aplicacao da projecao horizontal.")
     else:
         logger.info(filename + " salvo corretamente apos aplicacao da projecao horizontal.")
 
     #   salva a imagem rotacionada pela transformada de Hough
-    if not storeImage(pathOutHough + filename, houghImage):
+    if not store_image(PATH_OUT_HOUGH + filename, hough_image):
         logger.warning(filename + " nao foi salvo corretamente apos aplicacao da transformada de Hough.")
     else:
         logger.info(filename + " salvo corretamente apos aplicacao da transformada de Hough.")
@@ -128,11 +128,11 @@ def main():
     files = []
     threads = []
 
-    for filename in os.listdir(pathIn):
+    for filename in os.listdir(PATH_IN):
         files.append(filename)
 
     for i in range(len(files)):
-        t = threading.Thread(target=alignImage, args=(files[i], ))
+        t = threading.Thread(target=align_image, args=(files[i],))
         threads.append(t)
         t.start()
 
