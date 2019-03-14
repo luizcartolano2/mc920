@@ -23,17 +23,17 @@ except ImportError as e:
 ################################
 #   BAIXA OS PACOTES USADOS    #
 ################################
-packages = ['numpy', 'opencv-python', 'scikit-image', 'matplotlib']
-for package in packages:
-    if install_and_import(package):
-        logger.info("Pacote: " + package + " instalado corretamente.")
-    else:
-        logger.warning("Problemas para instalar o pacote " + package)
+# packages = ['numpy', 'opencv-python', 'scikit-image', 'matplotlib']
+# for package in packages:
+#     if install_and_import(package):
+#         logger.info("Pacote: " + package + " instalado corretamente.")
+#     else:
+#         logger.warning("Problemas para instalar o pacote " + package)
 
 
 #   importa as funcoes dos demais arquivos
 try:
-    from basicImage import read_image, store_image, write_plans
+    from basicImage import read_image, store_image, write_plans, convert_255_to_1, convert_1_to_255, adjust_brightness
 except ImportError as e:
     logger.error('Problemas ao importar: ' + str(e))
     raise SystemExit(1)
@@ -52,11 +52,23 @@ def main():
         if image.size == 0:
             pass
         else:
-            images.append(image)
+            images.append([image, filename])
 
+
+    #######################
+    #   AJUSTA O BRILHO   #
+    #######################
     for image in images:
-        write_plans(image, 0)
-        pdb.set_trace()
+        adjust_brightness(image[0], 1.5)
+
+    #####################
+    #   PLANO DE BITS   #
+    #####################
+    for image in images:
+        if write_plans(image[0], 0):
+            logger.info('Plano 0 da imagem ' + str(image[1]) + ' mostrado com sucesso!')
+
+
 
 
 if __name__ == '__main__':

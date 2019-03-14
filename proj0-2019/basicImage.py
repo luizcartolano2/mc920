@@ -95,3 +95,40 @@ def write_plans(img, img_plane):
     show()
 
     return True
+
+
+def convert_255_to_1(img):
+    """
+
+    :param img: The image matrix in [0, 255]
+    :return: The image matrix in [0, 1]
+
+    """
+    return img/255
+    # return cv2.normalize(img, None, alpha = 0, beta = 1, norm_type = cv2.NORM_MINMAX, dtype = cv2.CV_32F)
+
+
+def convert_1_to_255(img):
+    """
+
+    :param img: The image matrix in [0, 1]
+    :return: The image matrix in [0, 255]
+
+    """
+    img = img * 255
+    return img.astype('uint8')
+    # return cv2.normalize(img, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
+
+
+def adjust_brightness(img, gama):
+    """
+
+    :param img:
+    :param gama:
+    :return:
+
+    """
+    image = convert_255_to_1(img)
+    image = image ** (1/gama)
+
+    return convert_1_to_255(image)
