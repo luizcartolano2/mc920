@@ -12,7 +12,7 @@ logger = logger_lib.get_logger('main')
 try:
     import os
     import threading
-    from importer import install, install_and_import
+    from importer import install_and_import
     from constants import PROJ_PATH, IMAGE_PATH, OUTPUT_PATH, WKS_PATH
 except ImportError as e:
     logger.error('Problemas ao importar: ' + str(e))
