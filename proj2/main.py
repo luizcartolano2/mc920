@@ -5,7 +5,7 @@ __date__    = ""
 
 try:
     import os
-    from basicImage import readImage, storeImage, writePlans
+    from basicImage import readImage, storeImage, write_plans
     from basicText import txtToBin, changeNewLine, writeText
     from esteganografia import encodeImage, decodeImage
 except ImportError:
@@ -65,7 +65,7 @@ def main():
         storeImage(imageOutput, encodedImgMatrix)
 
         # debug
-        # writePlans(encodedImgMatrix)
+        # write_plans(encodedImgMatrix)
 
     elif operation == "decodificar":
         #########################################
