@@ -81,7 +81,7 @@ def write_plans(img, img_plane):
         plane = np.empty(img.shape)
     except Exception as e:
         logger.error('Erro ao criar um plano vazio: ' + str(e))
-        return False
+        return np.array([])
 
     try:
         plane[:, :, 2] = ((img[:, :, 2] >> img_plane) % 2) * 255
@@ -89,12 +89,9 @@ def write_plans(img, img_plane):
         plane[:, :, 0] = ((img[:, :, 0] >> img_plane) % 2) * 255
     except Exception as e:
         logger.error('Erro ao associar o plano especificado ao plano vazio anteriormente criado: ' + str(e))
-        return False
+        return np.array([])
 
-    imshow(plane)
-    show()
-
-    return True
+    return plane.astype('uint8')
 
 
 def convert_255_to_1(img):
@@ -123,12 +120,53 @@ def convert_1_to_255(img):
 def adjust_brightness(img, gama):
     """
 
-    :param img:
-    :param gama:
-    :return:
+    :param img: A list of ints with the matrix of pixels of the image
+    :param gama: The brightness factor
+    :return: A list of ints with the matrix of pixels of the image after the function
 
     """
-    image = convert_255_to_1(img)
-    image = image ** (1/gama)
+    try:
+        image = convert_255_to_1(img)
+    except Exception as e:
+        logger.error('Erro ao converter a imagem de [0, 255] para [0, 1]: ' + str(e))
+        return np.array([])
 
-    return convert_1_to_255(image)
+    try:
+        image = image ** (1/gama)
+    except Exception as e:
+        logger.error('Erro ao aplicar a funcao gama a imagem: ' + str(e))
+        return np.array([])
+
+    try:
+        image = convert_1_to_255(image)
+    except Exception as e:
+        logger.error('Erro ao converter a imagem de [0, 1] para [0, 255]: ' + str(e))
+        return np.array([])
+
+    return image
+
+
+def merge_weighted_average(img1, weight1, img2, weight2):
+    """
+
+    :param img1: A list of ints with the matrix of pixels of the first image
+    :param weight1: The weight the first image will have in the final result
+    :param img2: A list of ints with the matrix of pixels of the second image
+    :param weight2: The weight the second image will have in the final result
+    :return: The final image that is the two images combined in a weighted average strategy
+
+    """
+    if img1.size == img2.size:
+        try:
+            image = weight1 * img1 + weight2 * img2
+        except Exception as e:
+            logger.error('Falha ao operar com os arrays: ' + str(e))
+            return np.array([])
+
+        imshow(image.astype('uint8'))
+        show()
+
+        return image
+    else:
+        logger.error('Nao foi possivel aplicar a tecnica para as imagens pois elas possuem dimensoes diferentes.')
+        return np.array([])

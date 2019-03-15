@@ -33,7 +33,7 @@ except ImportError as e:
 
 #   importa as funcoes dos demais arquivos
 try:
-    from basicImage import read_image, store_image, write_plans, convert_255_to_1, convert_1_to_255, adjust_brightness
+    from basicImage import read_image, store_image, write_plans, convert_255_to_1, convert_1_to_255, adjust_brightness, merge_weighted_average
 except ImportError as e:
     logger.error('Problemas ao importar: ' + str(e))
     raise SystemExit(1)
@@ -54,21 +54,24 @@ def main():
         else:
             images.append([image, filename])
 
+    ######################################
+    #   MERGE DAS IMAGENS USANDO PESOS   #
+    ######################################
+    for i in range(0, len(images) - 1):
+        merge_weighted_average(images[i][0], 0.5, images[i+1][0], 0.5)
 
     #######################
     #   AJUSTA O BRILHO   #
     #######################
     for image in images:
-        adjust_brightness(image[0], 1.5)
+        adjust_brightness(image[0], 2.5)
 
     #####################
     #   PLANO DE BITS   #
     #####################
     for image in images:
-        if write_plans(image[0], 0):
+        if write_plans(image[0], 0).size != 0:
             logger.info('Plano 0 da imagem ' + str(image[1]) + ' mostrado com sucesso!')
-
-
 
 
 if __name__ == '__main__':
