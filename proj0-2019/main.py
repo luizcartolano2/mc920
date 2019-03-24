@@ -59,8 +59,6 @@ def main():
     ############################
     for image in images:
         image_vector = puzzle_image(image[0], 4, image[1])
-        store_image('teste.png', combine_images_4x4(image_vector, [6,11,13,3,8,16,1,9,12,14,2,7,4,15,10,5], image[1]))
-        pdb.set_trace()
 
     ######################################
     #   MERGE DAS IMAGENS USANDO PESOS   #

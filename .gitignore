@@ -11,3 +11,4 @@ proj4/__pycache__/*
 .idea/
 log.log*
 log.log
+*.log

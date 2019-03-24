@@ -3,13 +3,16 @@ __status__  = "terminated"
 __version__ = "1.1"
 __date__    = "16 february 2019"
 
+
 import logging
 import sys
 from logging.handlers import TimedRotatingFileHandler
+from datetime import date
 
 
+TODAY_DATE = (date.today()).strftime("%d-%m-%Y")
 FORMATTER = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-LOG_FILE = "log.log"
+LOG_FILE = 'log-' + str(TODAY_DATE) + '.log'
 
 
 def get_console_handler():
