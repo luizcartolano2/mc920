@@ -83,6 +83,7 @@ def write_plans(img, img_plane, filename='Nao informado!'):
         logger.error('Erro ao associar o plano especificado ao plano vazio anteriormente criado: ' + str(e) + ' para a imagem: ' + str(filename))
         return np.array([])
 
+    logger.info('Imagem ' + str(filename) + ' teve seus planos separados com sucesso.')
     return plane.astype('uint8')
 
 
@@ -112,6 +113,7 @@ def convert_1_to_255(img, filename='Nao informado!'):
     """
     try:
         img = img * 255
+        logger.info('Imagem ' + str(filename) + ' convertida com sucesso para [0, 255].')
         return img.astype('uint8')
     except Exception as e:
         logger.error('Problemas ao converter a imagem(' + str(filename) + ') de [0, 1] para [0, 255]: ' + str(e))
@@ -144,6 +146,7 @@ def adjust_brightness(img, gama, filename='Nao informado!'):
         logger.error('Erro ao aplicar a funcao adjust_brightness a image - ' + str(filename))
         return np.array([])
 
+    logger.info('Imagem ' + str(filename) + ' teve seu brilho ajustado com sucesso.')
     return image
 
 
@@ -165,10 +168,10 @@ def merge_weighted_average(img1, weight1, img2, weight2, filename1='Nao informad
         except Exception as e:
             logger.error('Falha ao operar com os arrays: ' + str(e) + ' nas imagens: ' + str(filename1) + ' e ' + str(filename2))
             return np.array([])
+        logger.info('Imagems ' + str(filename1) + 'e ' + str(filename2)+ ' combinadas com sucesso.')
         return image
     else:
-        logger.error('Nao foi possivel aplicar a tecnica para as imagens - ' + str(filename1) + ' e ' + str(filename2) +
-                                                                             ' pois elas possuem dimensoes diferentes.')
+        logger.error('Nao foi possivel aplicar a tecnica para as imagens - ' + str(filename1) + ' e ' + str(filename2) +                                                                             ' pois elas possuem dimensoes diferentes.')
         return np.array([])
 
 
@@ -206,6 +209,7 @@ def puzzle_image(img, num_split, filename='Nao informado!'):
                 x = 0
                 y = y + img.shape[1]/num_split
 
+            logger.info('Imagem ' + str(filename) + ' dividida com sucesso.')
             return image_vector
         else:
             logger.info('Nao foi possivel dividir a imagem(' + str(filename) + ' pois o tamanho da imagem nao e multiplo do numero de divisoes.')
@@ -213,3 +217,41 @@ def puzzle_image(img, num_split, filename='Nao informado!'):
     else:
         logger.info('Nao foi possivel dividir a image(' + str(filename) + ' pois ela nao possue as mesmas dimensoes para X e Y!')
         return []
+
+
+def combine_images_4x4(img_list, img_order, filename='Nao informado!'):
+    """
+
+    :param img_list: List whith the squares of the original image
+    :param img_order: List with the new order the image will receive
+    :param filename: Filename of the original image
+    :return: np.array with the recombined image
+
+    """
+    if len(img_list) > 0:
+        if len(img_order) == 16:
+            try:
+                hor1 = np.hstack((img_list[img_order[0] - 1], img_list[img_order[1] - 1], img_list[img_order[2] - 1], img_list[img_order[3] - 1]))
+                hor2 = np.hstack((img_list[img_order[4] - 1], img_list[img_order[5] - 1], img_list[img_order[6] - 1], img_list[img_order[7] - 1]))
+                hor3 = np.hstack((img_list[img_order[8] - 1], img_list[img_order[9] - 1], img_list[img_order[10] - 1], img_list[img_order[11] - 1]))
+                hor4 = np.hstack((img_list[img_order[12] - 1], img_list[img_order[13] - 1], img_list[img_order[14] - 1], img_list[img_order[15] - 1]))
+            except Exception as e:
+                logger.error('Problemas ao juntar horizontalmete a imagem(' + str(filename) + '): ' + str(e))
+                return np.array([])
+
+            try:
+                vertical_image = np.vstack((hor1, hor2, hor3, hor4))
+                logger.info('Imagem ' + str(filename) + ' recombinada com sucesso.')
+                return vertical_image
+            except Exception as e:
+                logger.error('Problemas ao juntar verticalmente a imagem(' + str(filename) + '): ' + str(e))
+                return np.array([])
+        else:
+            logger.info('A funcao para recombinar as imagens nao pode ser executada para a imagem: ' + str(filename) +
+                        ' pois nao foi fornecida uma ordem correta para recombinacao.')
+            return np.array([])
+
+    else:
+        logger.info('A funcao para recombinar as imagens nao pode ser executada para a imagem: ' + str(filename) +
+                     ' pois nao foi fornecida uma lista valida de imagens.')
+        return np.array([])
