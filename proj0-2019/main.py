@@ -33,7 +33,7 @@ except ImportError as e:
 
 #   importa as funcoes dos demais arquivos
 try:
-    from basicImage import read_image, store_image, write_plans, convert_255_to_1, convert_1_to_255, adjust_brightness, merge_weighted_average
+    from basicImage import read_image, store_image, write_plans, adjust_brightness, merge_weighted_average, puzzle_image
 except ImportError as e:
     logger.error('Problemas ao importar: ' + str(e))
     raise SystemExit(1)
@@ -53,6 +53,13 @@ def main():
             pass
         else:
             images.append([image, filename])
+
+    ############################
+    #   CRIA O QUEBRA CABECA   #
+    ############################
+    for image in images:
+        puzzle_image(image[0], 4, image[1])
+        pdb.set_trace()
 
     ######################################
     #   MERGE DAS IMAGENS USANDO PESOS   #

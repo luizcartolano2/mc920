@@ -14,6 +14,7 @@ logger = logger_lib.get_logger('basicImage')
 try:
     import cv2
     import numpy as np
+    import pdb
     from matplotlib.pyplot import imshow, show
 except ImportError as e:
     logger.error('Problemas ao importar: ' + str(e))
@@ -169,3 +170,38 @@ def merge_weighted_average(img1, weight1, img2, weight2, filename1='Nao informad
         logger.error('Nao foi possivel aplicar a tecnica para as imagens - ' + str(filename1) + ' e ' + str(filename2) +
                                                                              ' pois elas possuem dimensoes diferentes.')
         return np.array([])
+
+
+def puzzle_image(img, num_split, filename='Nao informado!'):
+    """
+
+    :param img: A list of ints with the matrix of pixels of the image
+    :param num_split: Number of rows the image will be split
+    :param filename: The filename of the image that will be managed
+    :return: A list with the image splited in squares of same size
+
+    """
+    # first we must make sure that the image has the same x and y dimensions
+    if img.shape[0] == img.shape[1]:
+        # then we check if divisors fit to image dimensions
+        if img.shape[0] % num_split == 0:
+            # here we clone the image
+            img_clone = img.copy()
+            x = y = 0
+            image_vector = [None] * (num_split ** 2)
+            num_squares = 0
+            while y < img.shape[1]:
+                while x < img.shape[0]:
+                    image_vector[num_squares] = img_clone[int(y):int(y+(img.shape[1]/num_split)), int(x):int(x+(img.shape[0]/num_split))]
+                    x = x + img.shape[1] / num_split
+                    num_squares = num_squares + 1
+                x = 0
+                y = y + img.shape[1]/num_split
+
+            return image_vector
+        else:
+            logger.info('Nao foi possivel dividir a image(' + str(filename) + ' pois o tamanho da imagem nao e multiplo do numero de divisoes.')
+            return []
+    else:
+        logger.info('Nao foi possivel dividir a image(' + str(filename) + ' pois ela nao possue as mesmas dimensoes para X e Y!')
+        return []
