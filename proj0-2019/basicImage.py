@@ -182,17 +182,25 @@ def puzzle_image(img, num_split, filename='Nao informado!'):
 
     """
     # first we must make sure that the image has the same x and y dimensions
-    if img.shape[0] == img.shape[1]:
+    if img.shape[0] == img.shape[1] and num_split != 0:
         # then we check if divisors fit to image dimensions
         if img.shape[0] % num_split == 0:
-            # here we clone the image
-            img_clone = img.copy()
+            try:
+                # here we clone the image
+                img_clone = img.copy()
+            except Exception as e:
+                logger.error('Problemas ao clonar a imagem(' + str(filename) + '! Erro: ' + str(e))
+                return []
             x = y = 0
             image_vector = [None] * (num_split ** 2)
             num_squares = 0
             while y < img.shape[1]:
                 while x < img.shape[0]:
-                    image_vector[num_squares] = img_clone[int(y):int(y+(img.shape[1]/num_split)), int(x):int(x+(img.shape[0]/num_split))]
+                    try:
+                        image_vector[num_squares] = img_clone[int(y):int(y+(img.shape[1]/num_split)), int(x):int(x+(img.shape[0]/num_split))]
+                    except Exception as e:
+                        logger.error('Problemas ao splitar a imagem(' + str(filename) + '! Erro: ' + str(e))
+                        return []
                     x = x + img.shape[1] / num_split
                     num_squares = num_squares + 1
                 x = 0
@@ -200,7 +208,7 @@ def puzzle_image(img, num_split, filename='Nao informado!'):
 
             return image_vector
         else:
-            logger.info('Nao foi possivel dividir a image(' + str(filename) + ' pois o tamanho da imagem nao e multiplo do numero de divisoes.')
+            logger.info('Nao foi possivel dividir a imagem(' + str(filename) + ' pois o tamanho da imagem nao e multiplo do numero de divisoes.')
             return []
     else:
         logger.info('Nao foi possivel dividir a image(' + str(filename) + ' pois ela nao possue as mesmas dimensoes para X e Y!')
