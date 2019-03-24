@@ -1,7 +1,7 @@
 __author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
-__status__  = "Finished"
+__status__  = "production"
 __version__ = "1.0"
-__date__    = "24 march 2019"
+__date__    = "24 March 2019"
 
 ######################
 #   SETA O LOGGER    #
