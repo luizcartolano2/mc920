@@ -54,31 +54,6 @@ def main():
         else:
             images.append([image, filename])
 
-    ############################
-    #   CRIA O QUEBRA CABECA   #
-    ############################
-    for image in images:
-        image_vector = puzzle_image(image[0], 4, image[1])
-
-    ######################################
-    #   MERGE DAS IMAGENS USANDO PESOS   #
-    ######################################
-    for i in range(0, len(images) - 1):
-        merge_weighted_average(images[i][0], 0.5, images[i+1][0], 0.5, images[i][1], images[i+1][1])
-
-    #######################
-    #   AJUSTA O BRILHO   #
-    #######################
-    for image in images:
-        adjust_brightness(image[0], 2.5, image[1])
-
-    #####################
-    #   PLANO DE BITS   #
-    #####################
-    for image in images:
-        if write_plans(image[0], 0, image[1]).size != 0:
-            logger.info('Plano 0 da imagem ' + str(image[1]) + ' mostrado com sucesso!')
-
 
 if __name__ == '__main__':
     logger.info("Path para o projeto: " + str(PROJ_PATH))

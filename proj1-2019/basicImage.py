@@ -255,3 +255,33 @@ def combine_images_4x4(img_list, img_order, filename='Nao informado!'):
         logger.info('A funcao para recombinar as imagens nao pode ser executada para a imagem: ' + str(filename) +
                      ' pois nao foi fornecida uma lista valida de imagens.')
         return np.array([])
+
+
+def space_filter(img, filter_type, filename='Nao informado!'):
+    if filter_type == 1:
+        kernel = np.array([[0., 0., -1., 0., 0.],[0., -1., -2., -1., 0.],[-1., -2., 16., -2., -1.],[0., -1., -2., -1., 0.],[0., 0., -1., 0., 0.]])
+        dst = cv2.filter2D(img, -1, kernel)
+        print(dst)
+        return dst
+    elif filter_type == 2:
+        kernel = np.array([[1., 4., 6., 4., 1.],[4., 16., 24., 16., 4.],[6., 24., 36., 24., 6.],[4., 16., 24., 16., 4.],[1., 4., 6., 4., 1.]])/256
+        dst = cv2.filter2D(img, -1, kernel)
+        return dst
+    elif filter_type == 3:
+        print('not working yet!\n')
+        return np.array([])
+        kernel1 = np.array([
+            [-1., 0., 1.],
+            [-2., 0., 2.],
+            [-1., 0., 1.]
+        ])
+        dst1 = cv2.filter2D(img, -1, kernel1)
+        kernel2 = np.array([
+            [-1., -2., 1.],
+            [0., 0., 0.],
+            [1., 2., 1.]
+        ])
+        dst2 = cv2.filter2D(img, -1, kernel2)
+    else:
+        logger.error('Nao foi aplicado filtro a imagem ' + str(filename) + ' pois solicitou-se uma operacao desconhecida')
+        return np.array([])
