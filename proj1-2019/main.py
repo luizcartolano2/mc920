@@ -52,8 +52,16 @@ def main():
         if image.size == 0:
             pass
         else:
+            space_filter(image)
             images.append([image, filename])
 
+    for image in images:
+        h1, h2, h3, h4, h5 = space_filter(image[0], image[1])
+        store_image('outputs/filter_h1/h1_' + str(image[1]), h1)
+        store_image('outputs/filter_h2/h2_' + str(image[1]), h2)
+        store_image('outputs/filter_h3/h3_' + str(image[1]), h3)
+        store_image('outputs/filter_h4/h4_' + str(image[1]), h4)
+        store_image('outputs/filter_h3_h4/h3_h4_' + str(image[1]), h5)
 
 if __name__ == '__main__':
     logger.info("Path para o projeto: " + str(PROJ_PATH))
