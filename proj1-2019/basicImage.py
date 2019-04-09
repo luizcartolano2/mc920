@@ -316,4 +316,11 @@ def space_filter(img, filename='Nao informado!'):
 
 
 def gaussian_filter(img, filename='Nao informado!'):
-    pass
+    # se aumenta o x/y sigma ele distorce mais
+    # o tamanho do kernel tem q ser grande tbm se nao n faz diferenca
+    output = []
+    for i in range(1,10,2):
+        # sizes of kernel: 5, 15, 25, 35, 45
+        output.append(cv2.GaussianBlur(img,(5*i,5*i),0))
+
+    return output

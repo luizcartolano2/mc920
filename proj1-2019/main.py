@@ -56,12 +56,21 @@ def main():
             images.append([image, filename])
 
     for image in images:
+        res = gaussian_filter(image[0], image[1])
+        store_image('outputs/frequencia/kernel_5/k5_' + str(image[1]), res[0])
+        store_image('outputs/frequencia/kernel_15/k15_' + str(image[1]), res[1])
+        store_image('outputs/frequencia/kernel_25/k25_' + str(image[1]), res[2])
+        store_image('outputs/frequencia/kernel_35/k35_' + str(image[1]), res[3])
+        store_image('outputs/frequencia/kernel_45/k45_' + str(image[1]), res[4])
+
+
+    for image in images:
         h1, h2, h3, h4, h5 = space_filter(image[0], image[1])
-        store_image('outputs/filter_h1/h1_' + str(image[1]), h1)
-        store_image('outputs/filter_h2/h2_' + str(image[1]), h2)
-        store_image('outputs/filter_h3/h3_' + str(image[1]), h3)
-        store_image('outputs/filter_h4/h4_' + str(image[1]), h4)
-        store_image('outputs/filter_h3_h4/h3_h4_' + str(image[1]), h5)
+        store_image('outputs/espacial/filter_h1/h1_' + str(image[1]), h1)
+        store_image('outputs/espacial/filter_h2/h2_' + str(image[1]), h2)
+        store_image('outputs/espacial/filter_h3/h3_' + str(image[1]), h3)
+        store_image('outputs/espacial/filter_h4/h4_' + str(image[1]), h4)
+        store_image('outputs/espacial/filter_h3_h4/h3_h4_' + str(image[1]), h5)
 
 if __name__ == '__main__':
     logger.info("Path para o projeto: " + str(PROJ_PATH))
