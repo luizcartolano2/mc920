@@ -259,25 +259,61 @@ def combine_images_4x4(img_list, img_order, filename='Nao informado!'):
 
 
 def space_filter(img, filename='Nao informado!'):
-    # primeiro filtro
+    """
+
+    :param img: A list of ints with the matrix of pixels of the image
+    :param filename: filename of the image
+    :return: the images with the filter applied
+
+    """
     matrix_1 = np.array([[0., 0., -1., 0., 0.],[0., -1., -2., -1., 0.],[-1., -2., 16., -2., -1.],[0., -1., -2., -1., 0.],[0., 0., -1., 0., 0.]])
-    filter_1 = cv2.filter2D(img, -1, matrix_1)
+    try:
+        # primeiro filtro
+        filter_1 = cv2.filter2D(img, -1, matrix_1)
+        logger.info('Imagem ' + str(filename) + ' teve o filtro h1 aplicado com sucesso.')
+    except Exception as e:
+        filter_1 = np.array([])
+        logger.error('Erro ao aplicar a funcao h1 a imagem - ' + str(filename) + ' pois: ' + str(e))
 
-    # segundo filtro
     matrix_2 = np.array([[1., 4., 6., 4., 1.],[4., 16., 24., 16., 4.],[6., 24., 36., 24., 6.],[4., 16., 24., 16., 4.],[1., 4., 6., 4., 1.]])/256
-    filter_2 = cv2.filter2D(img, -1, matrix_2)
+    try:
+        # segundo filtro
+        filter_2 = cv2.filter2D(img, -1, matrix_2)
+        logger.info('Imagem ' + str(filename) + ' teve o filtro h2 aplicado com sucesso.')
+    except Exception as e:
+        filter_2 = np.array([])
+        logger.error('Erro ao aplicar a funcao h2 a imagem - ' + str(filename) + ' pois: ' + str(e))
 
-    # terceiro filtro
     matrix_3 = np.array([[-1., 0., 1.],[-2., 0., 2.],[-1., 0., 1.]])
-    filter_3 = cv2.filter2D(img, -1, matrix_3)
+    try:
+        # terceiro filtro
+        filter_3 = cv2.filter2D(img, -1, matrix_3)
+        logger.info('Imagem ' + str(filename) + ' teve o filtro h3 aplicado com sucesso.')
+    except Exception as e:
+        filter_3 = np.array([])
+        logger.error('Erro ao aplicar a funcao h3 a imagem - ' + str(filename) + ' pois: ' + str(e))
 
-    # quarto filtro
     matrix_4 = np.array([[-1., -2., 1.],[0., 0., 0.],[1., 2., 1.]])
-    filter_4 = cv2.filter2D(img, -1, matrix_4)
+    try:
+        # quarto filtro
+        filter_4 = cv2.filter2D(img, -1, matrix_4)
+        logger.info('Imagem ' + str(filename) + ' teve o filtro h4 aplicado com sucesso.')
+    except Exception as e:
+        filter_4 = np.array([])
+        logger.error('Erro ao aplicar a funcao h4 a imagem - ' + str(filename) + ' pois: ' + str(e))
 
-    # mistura dos filtros 3 e 4
-    #  a formula para combinar as matrizes eh dada por sqrt(h3^2 + h4^2)
-    matrix_3_4 = (np.add((matrix_3 ** 2),(matrix_4 ** 2))) ** (1/2)
-    filter_3_4 = cv2.filter2D(img, -1, matrix_3_4)
+    try:
+        # mistura dos filtros 3 e 4
+        #  a formula para combinar as matrizes eh dada por sqrt(h3^2 + h4^2)
+        matrix_3_4 = (np.add((matrix_3 ** 2),(matrix_4 ** 2))) ** (1/2)
+        filter_3_4 = cv2.filter2D(img, -1, matrix_3_4)
+        logger.info('Imagem ' + str(filename) + ' teve os filtro h3/h4 aplicados com sucesso.')
+    except Exception as e:
+        filter_3_4 = np.array([])
+        logger.error('Erro ao aplicar a funcao h3/h4 a imagem - ' + str(filename) + ' pois: ' + str(e))
 
     return filter_1, filter_2, filter_3, filter_4, filter_3_4
+
+
+def gaussian_filter(img, filename='Nao informado!'):
+    pass
