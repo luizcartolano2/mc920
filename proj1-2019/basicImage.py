@@ -1,7 +1,7 @@
 __author__  = "Luiz Cartolano <cartolanoluiz@gmail.com>"
 __status__  = "Finished"
-__version__ = "1.0"
-__date__    = "24 march 2019"
+__version__ = "2.0"
+__date__    = "16 april 2019"
 
 
 ######################
@@ -14,9 +14,8 @@ logger = logger_lib.get_logger('basicImage')
 try:
     import cv2
     import numpy as np
-    import pdb
-    from matplotlib.pyplot import imshow, show
-    from math import sqrt
+    from scipy import signal, ndimage
+    from matplotlib.pylab import imshow, show
 except ImportError as e:
     logger.error('Problemas ao importar: ' + str(e))
     raise SystemExit(1)
@@ -32,7 +31,7 @@ def read_image(filename):
     """
     #   read the image
     try:
-        image_matrix = cv2.imread(filename, 1)
+        image_matrix = cv2.imread(filename, 0)
         img = image_matrix.astype(dtype='uint8')
         logger.info('Imagem ' + str(filename) + ' lida com sucesso.')
     except Exception as e:
@@ -98,7 +97,7 @@ def convert_255_to_1(img, filename='Nao informado!'):
     """
     try:
         logger.info('Conversao da imagem de [0, 255] para [0, 1] feita com sucesso!')
-        return img/255
+        return cv2.normalize(img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)
     except Exception as e:
         logger.error('Problemas ao converter a imagem(' + str(filename) + ') de [0, 255] para [0, 1]: ' + str(e))
         return np.array([])
@@ -113,9 +112,10 @@ def convert_1_to_255(img, filename='Nao informado!'):
 
     """
     try:
-        img = img * 255
+        # img = img * 255
+        img = cv2.normalize(img,  None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
         logger.info('Imagem ' + str(filename) + ' convertida com sucesso para [0, 255].')
-        return img.astype('uint8')
+        return img
     except Exception as e:
         logger.error('Problemas ao converter a imagem(' + str(filename) + ') de [0, 1] para [0, 255]: ' + str(e))
         return np.array([])
@@ -293,7 +293,7 @@ def space_filter(img, filename='Nao informado!'):
         filter_3 = np.array([])
         logger.error('Erro ao aplicar a funcao h3 a imagem - ' + str(filename) + ' pois: ' + str(e))
 
-    matrix_4 = np.array([[-1., -2., 1.],[0., 0., 0.],[1., 2., 1.]])
+    matrix_4 = np.array([[-1., -2., -1.],[0., 0., 0.],[1., 2., 1.]])
     try:
         # quarto filtro
         filter_4 = cv2.filter2D(img, -1, matrix_4)
@@ -305,22 +305,155 @@ def space_filter(img, filename='Nao informado!'):
     try:
         # mistura dos filtros 3 e 4
         #  a formula para combinar as matrizes eh dada por sqrt(h3^2 + h4^2)
-        matrix_3_4 = (np.add((matrix_3 ** 2),(matrix_4 ** 2))) ** (1/2)
-        filter_3_4 = cv2.filter2D(img, -1, matrix_3_4)
+        filter_3_4 = np.sqrt(np.add(np.square(filter_3.astype(np.float32)),np.square(filter_4.astype(np.float32))))
+
         logger.info('Imagem ' + str(filename) + ' teve os filtro h3/h4 aplicados com sucesso.')
     except Exception as e:
         filter_3_4 = np.array([])
         logger.error('Erro ao aplicar a funcao h3/h4 a imagem - ' + str(filename) + ' pois: ' + str(e))
 
-    return filter_1, filter_2, filter_3, filter_4, filter_3_4
+    return filter_1.astype(np.uint8), filter_2.astype(np.uint8), filter_3.astype(np.uint8), filter_4.astype(np.uint8), filter_3_4.astype(np.uint8)
 
 
-def gaussian_filter(img, filename='Nao informado!'):
-    # se aumenta o x/y sigma ele distorce mais
-    # o tamanho do kernel tem q ser grande tbm se nao n faz diferenca
-    output = []
+def gaussian_blur(img, filename='Nao informado!'):
+    """
+
+    :param img: A list of ints with the matrix of pixels of the image
+    :param filename: filename of the image
+    :return: a list of images with the filter applied
+
+    """
+    outputs = []
     for i in range(1,10,2):
-        # sizes of kernel: 5, 15, 25, 35, 45
-        output.append(cv2.GaussianBlur(img,(5*i,5*i),0))
 
-    return output
+        try:
+            # cria o filtro gaussiano
+            kernel = np.outer(cv2.getGaussianKernel(ksize=11,sigma=i),cv2.getGaussianKernel(ksize=11,sigma=i))
+        except Exception as e:
+            outputs.append(np.array([]))
+            logger.error('Erro ao criar o kernel gaussiano para a imagem - ' + str(filename) + ' pois: ' + str(e))
+            continue
+
+        try:
+            # chama a funcao que ira realizar a convolucao pelo metodo das transformadas de fourier
+            blurred = signal.fftconvolve(img, kernel, mode='same')
+        except Exception as e:
+            outputs.append(np.array([]))
+            logger.error('Erro ao realizar a convolucao da imagem - ' + str(filename) + ' pois: ' + str(e))
+            continue
+
+        try:
+            # converte para escala logaritmica
+            ones = np.ones(blurred.shape, blurred.dtype)
+            out_image = np.log(blurred + ones)
+        except Exception as e:
+            outputs.append(np.array([]))
+            logger.error('Erro na transformacao logaritmica da imagem - ' + str(filename) + ' pois: ' + str(e))
+            continue
+
+        try:
+            # normaliza a imagem para poder ser visualizada
+            out_image = convert_1_to_255(out_image, filename)
+        except Exception as e:
+            outputs.append(np.array([]))
+            logger.error('Erro na normalizacao da imagem - ' + str(filename) + ' pois: ' + str(e))
+            continue
+
+        storage_gaussian_kernal(kernel, 'frequencia/gaussiana/gaussiana-' + str(i))
+
+        # adiciona a imagem a lista de saída
+        logger.info('Imagem ' + str(filename) + ' teve o kernel gaussiano ' + str(i) + ' aplicados com sucesso.')
+        outputs.append(out_image)
+
+    return outputs
+
+
+def storage_gaussian_kernal(img, name):
+    """
+
+    :param img: A list of ints with the matrix of pixels of the image
+    :param name: filename of the image
+    :return: ---
+
+    """
+    try:
+        fft = np.fft.fft2(img)
+        fft_shift = np.fft.fftshift(fft)
+        mag_spectrum = 20*np.log(np.abs(fft_shift)+1)
+    except:
+        return False
+    try:
+        magnitude_spectrum = convert_1_to_255(mag_spectrum)
+        store_image('outputs/' + str(name) + '.png', magnitude_spectrum)
+        return True
+    except:
+        return False
+
+
+def gaussian_blur_implemented(img, filename=None):
+    """
+
+    :param img: A list of ints with the matrix of pixels of the image
+    :param filename: filename of the image
+    :return: a list of images with the filter applied
+
+    """
+    outputs = []
+    for i in range(1, 10, 2):
+
+        try:
+            # aplica fourier na imagem
+            fft = np.fft.fft2(img)
+            fft_shift = np.fft.fftshift(fft)
+        except Exception as e:
+            outputs.append(np.array([]))
+            logger.error('Erro ao aplicar fourier na imagem - ' + str(filename) + ' pois: ' + str(e))
+            continue
+
+        try:
+            # cria o kernel
+            kernel = cv2.getGaussianKernel(ksize=11, sigma=i)
+            kernel = kernel * kernel.T
+            kernel_fft = np.fft.fft2(kernel, img.shape)
+            kernel_fft_shift = np.fft.fftshift(kernel_fft)
+        except Exception as e:
+            outputs.append(np.array([]))
+            logger.error('Erro ao criar o kernel gaussiano para a imagem - ' + str(filename) + ' pois: ' + str(e))
+            continue
+
+        try:
+            # multiplica a imagem e a matriz
+            blurred = fft_shift * kernel_fft_shift
+        except Exception as e:
+            outputs.append(np.array([]))
+            logger.error('Erro ao multiplicar as matrizes para a imagem - ' + str(filename) + ' pois: ' + str(e))
+            continue
+
+        try:
+            # faz um unshift da imagem
+            f_ishift = np.fft.ifftshift(blurred)
+            img_back = np.fft.ifft2(f_ishift)
+        except Exception as e:
+            outputs.append(np.array([]))
+            logger.error('Erro ao voltar a imagem - ' + str(filename) + ' pois: ' + str(e))
+            continue
+
+        try:
+            # normaliza a imagem
+            img_back = np.abs(img_back)
+            img_back = convert_1_to_255(img_back)
+        except Exception as e:
+            outputs.append(np.array([]))
+            logger.error('Erro ao normalizar a imagem - ' + str(filename) + ' pois: ' + str(e))
+            continue
+
+        try:
+            storage_gaussian_kernal(kernel, 'frequencia-2/gaussiana-2/gaussiana-' + str(i))
+            storage_gaussian_kernal(img, 'frequencia-2/spectro/espectro-' + str(filename[0:-4]))
+            storage_gaussian_kernal(img_back, 'frequencia-2/spectro/espectro-saida-' + str(filename[0:-4]))
+        except Exception:
+            pass
+
+        outputs.append(img_back)
+
+    return outputs
