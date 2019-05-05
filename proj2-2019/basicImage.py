@@ -17,6 +17,7 @@ try:
     from scipy import signal, ndimage, misc
     from matplotlib.pylab import imshow, show
     from pdb import set_trace
+    from math import *
 except ImportError as e:
     logger.error('Problemas ao importar: ' + str(e))
     raise SystemExit(1)
@@ -461,6 +462,11 @@ def gaussian_blur_implemented(img, filename=None):
 
 
 def generate_masks_3x3():
+    """
+
+    :return:
+
+    """
     masks = []
     masks.append(np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]))
     masks.append(np.array([[0 ,0, 0], [1, 1, 0], [0, 0, 0]]))
@@ -477,6 +483,13 @@ def generate_masks_3x3():
 
 
 def halftoning_3x3(img, filename='Nao informado!'):
+    """
+
+    :param img:
+    :param filename:
+    :return:
+
+    """
     # resize the image before apply tech
     # img_resize = cv2.resize(img, (int(img.shape[0]/3), int(img.shape[1]/3)))
     img_resize = img
@@ -525,7 +538,12 @@ def halftoning_3x3(img, filename='Nao informado!'):
 
 
 def generate_mask_4x4(mask):
+    """
 
+    :param mask:
+    :return:
+
+    """
     total = mask.shape[0] * mask.shape[1] - 1
     dot_pattern = [np.zeros((mask.shape[0], mask.shape[1]))]
 
@@ -539,6 +557,13 @@ def generate_mask_4x4(mask):
 
 
 def halftoning_4x4(img, filename='Nao informado!'):
+    """
+
+    :param img:
+    :param filename:
+    :return:
+
+    """
     # resize the image
     # img_resize = cv2.resize(img, (int(img.shape[0]/4), int(img.shape[1]/4)))
     img_resize = img
@@ -584,4 +609,60 @@ def halftoning_4x4(img, filename='Nao informado!'):
     new_image = convert_1_to_255(binary_img, filename)
 
     # return cv2.resize(new_image, (int(new_image.shape[0]/4), int(new_image.shape[1]/4)))
+    return new_image
+
+
+def floyd_steinberg(img, filename='Nao informado!'):
+    """
+
+    :param img:
+    :param filename:
+    :return:
+
+    """
+    copy_image = img.copy()
+    new_image = np.zeros((img.shape[0], img.shape[1]))
+    flag = 0
+    for i in range(copy_image.shape[0]):
+        if flag == 0:
+            for j in range(copy_image.shape[1]):
+                if copy_image[i,j] > 128:
+                    new_image[i,j] = 255
+                    erro = (copy_image[i,j] - 255)
+                else:
+                    new_image[i,j] = 0
+                    erro = (copy_image[i,j] - 0)
+
+                a = int((erro * 7) / 16)
+                b = int((erro * 1) / 16)
+                c = int((erro * 5) / 16)
+                d = int((erro * 3) / 16)
+
+                if i != copy_image.shape[0] - 1 and j != 0 and j != copy_image.shape[1] - 1:
+                    copy_image[i,j+1] = int(copy_image[i,j+1] + a)
+                    copy_image[i+1,j+1] = int(copy_image[i+1,j+1] + b)
+                    copy_image[i+1,j] = int(copy_image[i+1,j] + c)
+                    copy_image[i+1,j-1] = int(copy_image[i+1,j-1] + d)
+            flag = 1
+        else:
+            for j in range(copy_image.shape[1] - 1, -1, -1):
+                if copy_image[i,j] > 128:
+                    new_image[i,j] = 255
+                    erro = (copy_image[i,j] - 255)
+                else:
+                    new_image[i,j] = 0
+                    erro = (copy_image[i,j] - 0)
+
+                a = int((erro * 7) / 16)
+                b = int((erro * 1) / 16)
+                c = int((erro * 5) / 16)
+                d = int((erro * 3) / 16)
+
+                if i != copy_image.shape[0] - 1 and j != 0 and j != copy_image.shape[1] - 1:
+                    copy_image[i,j+1] = int(copy_image[i,j+1] + a)
+                    copy_image[i+1,j+1] = int(copy_image[i+1,j+1] + b)
+                    copy_image[i+1,j] = int(copy_image[i+1,j] + c)
+                    copy_image[i+1,j-1] = int(copy_image[i+1,j-1] + d)
+            flag = 0
+
     return new_image
