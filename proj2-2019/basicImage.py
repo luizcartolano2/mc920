@@ -14,8 +14,9 @@ logger = logger_lib.get_logger('basicImage')
 try:
     import cv2
     import numpy as np
-    from scipy import signal, ndimage
+    from scipy import signal, ndimage, misc
     from matplotlib.pylab import imshow, show
+    from pdb import set_trace
 except ImportError as e:
     logger.error('Problemas ao importar: ' + str(e))
     raise SystemExit(1)
@@ -457,3 +458,130 @@ def gaussian_blur_implemented(img, filename=None):
         outputs.append(img_back)
 
     return outputs
+
+
+def generate_masks_3x3():
+    masks = []
+    masks.append(np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]))
+    masks.append(np.array([[0 ,0, 0], [1, 1, 0], [0, 0, 0]]))
+    masks.append(np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]]))
+    masks.append(np.array([[0, 0, 0], [1, 1, 0], [0, 1, 0]]))
+    masks.append(np.array([[0, 0, 0], [1, 1, 1], [0, 1, 0]]))
+    masks.append(np.array([[0, 0, 1], [1, 1, 1], [1, 0, 1]]))
+    masks.append(np.array([[0, 0, 1], [1, 1, 1], [1, 1, 0]]))
+    masks.append(np.array([[1, 0, 1], [1, 1, 1], [1, 1, 0]]))
+    masks.append(np.array([[1, 0, 1], [1, 1, 1], [1, 1, 1]]))
+    masks.append(np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]))
+
+    return masks
+
+
+def halftoning_3x3(img, filename='Nao informado!'):
+    # resize the image before apply tech
+    # img_resize = cv2.resize(img, (int(img.shape[0]/3), int(img.shape[1]/3)))
+    img_resize = img
+    # get masks for Dithering
+    masks = generate_masks_3x3()
+    # map the scale of gray of each pixel in the image
+    masked = np.ceil((10.0 / 255.0) * img_resize)
+    # create the new image with the original size
+    r_img = np.zeros((3 * img_resize.shape[0], 3 * img_resize.shape[1]))
+
+    row_counter = 0
+    column_counter = 0
+
+    for i in range(img_resize.shape[0]):
+        if column_counter == 0:
+            for j in range(img_resize.shape[1]):
+                xs = i + row_counter
+                xf = i + row_counter + 3
+                ys = j + column_counter
+                yf = j + column_counter + 3
+
+                r_img[int(xs):int(xf), int(ys):int(yf)] = masks[int(masked[i,j]) - 1][:,:]
+
+                column_counter = column_counter + 2
+        else:
+            # column_counter = r_img.shape[1] - 3
+            for j in range(img_resize.shape[1] - 1, -1, -1):
+                xs = i + row_counter
+                xf = i + row_counter + 3
+                ys = column_counter + j - 2
+                if ys < 0:
+                    ys = 0
+                yf = column_counter + j + 1
+                # print(str(xs) + ':' + str(xf) + ',' + str(ys) + ':' + str(yf))
+                r_img[int(xs):int(xf), int(ys):int(yf)] = masks[int(masked[i,  j]) - 1][:, :]
+
+                column_counter = column_counter - 2
+            column_counter = 0
+
+        row_counter = row_counter + 2
+
+    new_image = convert_1_to_255(r_img, filename)
+
+    # return cv2.resize(new_image, (int(img.shape[0]/3), int(img.shape[1]/3)))
+    return new_image
+
+
+def generate_mask_4x4(mask):
+
+    total = mask.shape[0] * mask.shape[1] - 1
+    dot_pattern = [np.zeros((mask.shape[0], mask.shape[1]))]
+
+    for i in range(total):
+        last = dot_pattern[i]
+        new = (mask == i)
+        dot_pattern.append(last + new)
+    dot_pattern = np.array(dot_pattern)
+
+    return dot_pattern
+
+
+def halftoning_4x4(img, filename='Nao informado!'):
+    # resize the image
+    # img_resize = cv2.resize(img, (int(img.shape[0]/4), int(img.shape[1]/4)))
+    img_resize = img
+    # get the masks generate based on bayer padron
+    mask = np.array([[0, 12, 3, 15], [8, 4, 11, 7], [2, 14, 1, 13], [10, 6, 9, 5]])
+    masks = generate_mask_4x4(mask)
+
+    # create a new image with the levels and sizes to match the mask
+    masked = np.ceil((16.0 / 255.0) * img)
+
+    binary_img = np.zeros((4 * img_resize.shape[0], 4 * img_resize.shape[1]))
+
+    row_counter = 0
+    column_counter = 0
+
+    for i in range(img_resize.shape[0]):
+        if column_counter == 0:
+            for j in range(img_resize.shape[1]):
+                xs = i + row_counter
+                xf = i + row_counter + 4
+                ys = j + column_counter
+                yf = j + column_counter + 4
+
+                binary_img[int(xs):int(xf), int(ys):int(yf)] = masks[int(masked[i,j]) - 1][:,:]
+
+                column_counter = column_counter + 3
+        else:
+            for j in range(img_resize.shape[1] - 1, -1, -1):
+                xs = i + row_counter
+                xf = i + row_counter + 4
+                ys = column_counter + j - 3
+                if ys < 0:
+                    ys = 0
+                yf = column_counter + j + 1
+                # print(str(xs) + ':' + str(xf) + ',' + str(ys) + ':' + str(yf))
+                binary_img[int(xs):int(xf), int(ys):int(yf)] = masks[int(masked[i,  j]) - 1][:, :]
+
+                column_counter = column_counter - 3
+            column_counter = 0
+
+        row_counter = row_counter + 3
+
+    new_image = convert_1_to_255(binary_img, filename)
+
+    # return cv2.resize(new_image, (int(new_image.shape[0]/4), int(new_image.shape[1]/4)))
+    return new_image
