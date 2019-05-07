@@ -527,6 +527,7 @@ def halftoning_3x3(img, filename='Nao informado!'):
 
     new_image = convert_1_to_255(r_img, filename)
 
+    logger.info("Halftone3x3 aplicado corretamente para a imagem: " + str(filename))
     return new_image
 
 
@@ -595,6 +596,7 @@ def halftoning_4x4(img, filename='Nao informado!'):
 
     new_image = convert_1_to_255(binary_img, filename)
 
+    logger.info("Halftone4x4 aplicado corretamente para a imagem: " + str(filename))
     return new_image
 
 
@@ -658,4 +660,5 @@ def floyd_steinberg(img, filename='Nao informado!'):
     except Exception as e:
         logger.error('Erro ' + str(e) + ' no loop do Floyd para a imagem: ' + str(filename))
 
+    logger.info("Floyd aplicado corretamente para a imagem: " + str(filename))
     return new_image

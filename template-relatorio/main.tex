@@ -1,0 +1,28 @@
+\documentclass{pack}
+
+\begin{document}
+
+    \title{Titulo}
+    \author{Nome}
+    \date{\MONTH de \the\year}
+    
+    \maketitle
+    
+    \input{1-resumo.tex}
+    \input{2-introducao.tex}
+    \input{3-implementacao.tex}
+    \input{4-resultados.tex}
+    \input{5-discussao.tex}
+    \input{6-conclusao.tex}
+    
+    \nocite{*}
+    \bibliographystyle{plain}
+    \bibliography{references}
+    
+    \newpage
+    \input{7-anexos.tex}
+    
+    
+    
+
+\end{document}
