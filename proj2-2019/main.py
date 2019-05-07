@@ -47,14 +47,14 @@ def main():
         else:
             images.append([image, filename])
 
-    floyd_steinberg(images[0][0])
+    for image in images:
+        filename = image[1][0:image[1].find('.')] + '.pbm'
+        store_image(OUTPUT_PATH + 'ordenado/matriz3/' + filename, halftoning_3x3(image[0], filename))
+        store_image(OUTPUT_PATH + 'ordenado/matriz4/' + filename, halftoning_4x4(image[0], filename))
 
     for image in images:
-        store_image(OUTPUT_PATH + 'ordenado/matriz3/' + image[1], halftoning_3x3(image[0], image[1]))
-        store_image(OUTPUT_PATH + 'ordenado/matriz4/' + image[1], halftoning_4x4(image[0], image[1]))
-
-    for image in images:
-        store_image(OUTPUT_PATH + 'nao-ordenado/' + image[1], floyd_steinberg(image[0], image[1]))
+        filename = image[1][0:image[1].find('.')] + '.pbm'
+        store_image(OUTPUT_PATH + 'nao-ordenado/' + filename, floyd_steinberg(image[0], filename))
 
 if __name__ == '__main__':
     logger.info("Path para o projeto: " + str(PROJ_PATH))

@@ -490,50 +490,43 @@ def halftoning_3x3(img, filename='Nao informado!'):
     :return:
 
     """
-    # resize the image before apply tech
-    # img_resize = cv2.resize(img, (int(img.shape[0]/3), int(img.shape[1]/3)))
-    img_resize = img
-    # get masks for Dithering
-    masks = generate_masks_3x3()
-    # map the scale of gray of each pixel in the image
-    masked = np.ceil((10.0 / 255.0) * img_resize)
-    # create the new image with the original size
-    r_img = np.zeros((3 * img_resize.shape[0], 3 * img_resize.shape[1]))
+    try:
+        # copy image
+        img_resize = img.copy()
 
-    row_counter = 0
-    column_counter = 0
+        # get masks for Dithering
+        masks = generate_masks_3x3()
+        # map the scale of gray of each pixel in the image
+        masked = np.ceil((10.0 / 255.0) * img_resize)
 
-    for i in range(img_resize.shape[0]):
-        if column_counter == 0:
-            for j in range(img_resize.shape[1]):
-                xs = i + row_counter
-                xf = i + row_counter + 3
-                ys = j + column_counter
-                yf = j + column_counter + 3
+        # create the new image with the new size
+        r_img = np.zeros((3 * img_resize.shape[0], 3 * img_resize.shape[1]))
 
-                r_img[int(xs):int(xf), int(ys):int(yf)] = masks[int(masked[i,j]) - 1][:,:]
+        row_counter = 0
+        column_counter = 0
+    except Exception as e:
+        logger.error('Erro ' + str(e) + ' no set das variaveis da halfotne 3x3 para a imagem: ' + str(filename))
+        return np.array([])
 
-                column_counter = column_counter + 2
-        else:
-            # column_counter = r_img.shape[1] - 3
-            for j in range(img_resize.shape[1] - 1, -1, -1):
-                xs = i + row_counter
-                xf = i + row_counter + 3
-                ys = column_counter + j - 2
-                if ys < 0:
-                    ys = 0
-                yf = column_counter + j + 1
-                # print(str(xs) + ':' + str(xf) + ',' + str(ys) + ':' + str(yf))
-                r_img[int(xs):int(xf), int(ys):int(yf)] = masks[int(masked[i,  j]) - 1][:, :]
+    try:
+        for i in range(img_resize.shape[0]):
+            if column_counter == 0:
+                for j in range(img_resize.shape[1]):
+                    r_img[int(i+row_counter):int(i+row_counter+3), int(j+column_counter):int(j+column_counter+3)] = masks[int(masked[i,j]) - 1][:,:]
+                    column_counter = column_counter + 2
+            else:
+                for j in range(img_resize.shape[1] - 1, -1, -1):
+                    r_img[int(i+row_counter):int(i+row_counter+3), int(column_counter+j-2):int(column_counter+j+1)] = masks[int(masked[i,  j]) - 1][:, :]
+                    column_counter = column_counter - 2
+                column_counter = 0
 
-                column_counter = column_counter - 2
-            column_counter = 0
-
-        row_counter = row_counter + 2
+            row_counter = row_counter + 2
+    except Exception as e:
+        logger.error('Erro ' + str(e) + ' no loop da halfotne 3x3 para a imagem: ' + str(filename))
+        return np.array([])
 
     new_image = convert_1_to_255(r_img, filename)
 
-    # return cv2.resize(new_image, (int(img.shape[0]/3), int(img.shape[1]/3)))
     return new_image
 
 
@@ -564,51 +557,44 @@ def halftoning_4x4(img, filename='Nao informado!'):
     :return:
 
     """
-    # resize the image
-    # img_resize = cv2.resize(img, (int(img.shape[0]/4), int(img.shape[1]/4)))
-    img_resize = img
-    # get the masks generate based on bayer padron
-    mask = np.array([[0, 12, 3, 15], [8, 4, 11, 7], [2, 14, 1, 13], [10, 6, 9, 5]])
-    masks = generate_mask_4x4(mask)
+    try:
+        # copy image
+        img_resize = img.copy()
 
-    # create a new image with the levels and sizes to match the mask
-    masked = np.ceil((16.0 / 255.0) * img)
+        # get the masks generate based on bayer padron
+        mask = np.array([[0, 12, 3, 15], [8, 4, 11, 7], [2, 14, 1, 13], [10, 6, 9, 5]])
+        masks = generate_mask_4x4(mask)
 
-    binary_img = np.zeros((4 * img_resize.shape[0], 4 * img_resize.shape[1]))
+        # create a new image with the levels and sizes to match the mask
+        masked = np.ceil((16.0 / 255.0) * img)
 
-    row_counter = 0
-    column_counter = 0
+        binary_img = np.zeros((4 * img_resize.shape[0], 4 * img_resize.shape[1]))
 
-    for i in range(img_resize.shape[0]):
-        if column_counter == 0:
-            for j in range(img_resize.shape[1]):
-                xs = i + row_counter
-                xf = i + row_counter + 4
-                ys = j + column_counter
-                yf = j + column_counter + 4
+        row_counter = 0
+        column_counter = 0
+    except Exception as e:
+        logger.error('Erro ' + str(e) + ' no set das variaveis da halfotne 4x4 para a imagem: ' + str(filename))
+        return np.array([])
 
-                binary_img[int(xs):int(xf), int(ys):int(yf)] = masks[int(masked[i,j]) - 1][:,:]
+    try:
+        for i in range(img_resize.shape[0]):
+            if column_counter == 0:
+                for j in range(img_resize.shape[1]):
+                    binary_img[int(i+row_counter):int(i+row_counter+4), int(j+column_counter):int(j+column_counter+4)] = masks[int(masked[i,j]) - 1][:,:]
+                    column_counter = column_counter + 3
+            else:
+                for j in range(img_resize.shape[1] - 1, -1, -1):
+                    binary_img[int(i+row_counter):int(i+row_counter+4), int(column_counter+j-3):int(column_counter+j+1)] = masks[int(masked[i,  j]) - 1][:, :]
+                    column_counter = column_counter - 3
+                column_counter = 0
 
-                column_counter = column_counter + 3
-        else:
-            for j in range(img_resize.shape[1] - 1, -1, -1):
-                xs = i + row_counter
-                xf = i + row_counter + 4
-                ys = column_counter + j - 3
-                if ys < 0:
-                    ys = 0
-                yf = column_counter + j + 1
-                # print(str(xs) + ':' + str(xf) + ',' + str(ys) + ':' + str(yf))
-                binary_img[int(xs):int(xf), int(ys):int(yf)] = masks[int(masked[i,  j]) - 1][:, :]
-
-                column_counter = column_counter - 3
-            column_counter = 0
-
-        row_counter = row_counter + 3
+            row_counter = row_counter + 3
+    except Exception as e:
+        logger.error('Erro ' + str(e) + ' no loop da halfotne 4x4 para a imagem: ' + str(filename))
+        return np.array([])
 
     new_image = convert_1_to_255(binary_img, filename)
 
-    # return cv2.resize(new_image, (int(new_image.shape[0]/4), int(new_image.shape[1]/4)))
     return new_image
 
 
@@ -620,49 +606,56 @@ def floyd_steinberg(img, filename='Nao informado!'):
     :return:
 
     """
-    copy_image = img.copy()
-    new_image = np.zeros((img.shape[0], img.shape[1]))
-    flag = 0
-    for i in range(copy_image.shape[0]):
-        if flag == 0:
-            for j in range(copy_image.shape[1]):
-                if copy_image[i,j] > 128:
-                    new_image[i,j] = 255
-                    erro = (copy_image[i,j] - 255)
-                else:
-                    new_image[i,j] = 0
-                    erro = (copy_image[i,j] - 0)
+    try:
+        copy_image = img.copy()
+        new_image = np.zeros((img.shape[0], img.shape[1]))
+        flag = 0
+    except Exception as e:
+        logger.error("Erro " + str(e) + " nas inicializacoes do FLOYD para a imagem: " + str(filename))
+        return np.array([])
+    try:
+        for i in range(copy_image.shape[0]):
+            if flag == 0:
+                for j in range(copy_image.shape[1]):
+                    if copy_image[i,j] > 128:
+                        new_image[i,j] = 255
+                        erro = (copy_image[i,j] - 255)
+                    else:
+                        new_image[i,j] = 0
+                        erro = (copy_image[i,j] - 0)
 
-                a = int((erro * 7) / 16)
-                b = int((erro * 1) / 16)
-                c = int((erro * 5) / 16)
-                d = int((erro * 3) / 16)
+                    a = int((erro * 7) / 16)
+                    b = int((erro * 1) / 16)
+                    c = int((erro * 5) / 16)
+                    d = int((erro * 3) / 16)
 
-                if i != copy_image.shape[0] - 1 and j != 0 and j != copy_image.shape[1] - 1:
-                    copy_image[i,j+1] = int(copy_image[i,j+1] + a)
-                    copy_image[i+1,j+1] = int(copy_image[i+1,j+1] + b)
-                    copy_image[i+1,j] = int(copy_image[i+1,j] + c)
-                    copy_image[i+1,j-1] = int(copy_image[i+1,j-1] + d)
-            flag = 1
-        else:
-            for j in range(copy_image.shape[1] - 1, -1, -1):
-                if copy_image[i,j] > 128:
-                    new_image[i,j] = 255
-                    erro = (copy_image[i,j] - 255)
-                else:
-                    new_image[i,j] = 0
-                    erro = (copy_image[i,j] - 0)
+                    if i != copy_image.shape[0] - 1 and j != 0 and j != copy_image.shape[1] - 1:
+                        copy_image[i,j+1] = int(copy_image[i,j+1] + a)
+                        copy_image[i+1,j+1] = int(copy_image[i+1,j+1] + b)
+                        copy_image[i+1,j] = int(copy_image[i+1,j] + c)
+                        copy_image[i+1,j-1] = int(copy_image[i+1,j-1] + d)
+                flag = 1
+            else:
+                for j in range(copy_image.shape[1] - 1, -1, -1):
+                    if copy_image[i,j] > 128:
+                        new_image[i,j] = 255
+                        erro = (copy_image[i,j] - 255)
+                    else:
+                        new_image[i,j] = 0
+                        erro = (copy_image[i,j] - 0)
 
-                a = int((erro * 7) / 16)
-                b = int((erro * 1) / 16)
-                c = int((erro * 5) / 16)
-                d = int((erro * 3) / 16)
+                    a = int((erro * 7) / 16)
+                    b = int((erro * 1) / 16)
+                    c = int((erro * 5) / 16)
+                    d = int((erro * 3) / 16)
 
-                if i != copy_image.shape[0] - 1 and j != 0 and j != copy_image.shape[1] - 1:
-                    copy_image[i,j+1] = int(copy_image[i,j+1] + a)
-                    copy_image[i+1,j+1] = int(copy_image[i+1,j+1] + b)
-                    copy_image[i+1,j] = int(copy_image[i+1,j] + c)
-                    copy_image[i+1,j-1] = int(copy_image[i+1,j-1] + d)
-            flag = 0
+                    if i != copy_image.shape[0] - 1 and j != 0 and j != copy_image.shape[1] - 1:
+                        copy_image[i,j-1] = int(copy_image[i,j-1] + a)
+                        copy_image[i+1,j+1] = int(copy_image[i+1,j+1] + d)
+                        copy_image[i+1,j] = int(copy_image[i+1,j] + c)
+                        copy_image[i+1,j-1] = int(copy_image[i+1,j-1] + b)
+                flag = 0
+    except Exception as e:
+        logger.error('Erro ' + str(e) + ' no loop do Floyd para a imagem: ' + str(filename))
 
     return new_image
