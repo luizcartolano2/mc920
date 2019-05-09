@@ -32,6 +32,44 @@ except ImportError as e:
     raise SystemExit(1)
 
 
+def teste_processamento():
+    tempos_3 = []
+    tempos_4 = []
+    tempo_floyd = []
+
+    image = read_image(IMAGE_PATH + '/' + 'baboon.png')
+
+    for i in range(0,1000):
+        start = time.time()
+        res = halftoning_3x3(image, 'baboon.png')
+        end = time.time()
+        tempos_3.append(end - start)
+
+    for i in range(0,1000):
+        start = time.time()
+        res = halftoning_4x4(image, 'baboon.png')
+        end = time.time()
+        tempos_4.append(end - start)
+
+    for i in range(0,1000):
+        start = time.time()
+        res = floyd_steinberg(image, 'baboon.png')
+        end = time.time()
+        tempo_floyd.append(end - start)
+
+    for lst in [tempos_3, tempos_4, tempo_floyd]:
+        # tempo da implementacao manual
+        media_normal = mean(lst)
+        desvio_normal = stdev(lst)
+        intervalo_conf_normal = '(' + str(media_normal - 1.96 * (desvio_normal / (len(lst)) ** (1 / 2))) + ',' + str(
+            media_normal + 1.96 * (desvio_normal / (len(lst)) ** (1 / 2))) + ')'
+        print("-----------------------------------------------------------------------------------------------------------------")
+        print("| Media do tempo gasto para a busca DFS: " + str(media_normal))
+        print("| Desvio padrao do tempo gasto para a busca DFS: " + str(desvio_normal))
+        print("| Intervalo de confiança para a busca DFS: " + intervalo_conf_normal)
+        print("-----------------------------------------------------------------------------------------------------------------")
+
+
 def main():
     """
 
@@ -64,5 +102,5 @@ if __name__ == '__main__':
 
     #   essa linha apaga tudo que foi escrito no terminal ate o momento, ela nao funciona no pycharm
     # os.system('cls' if os.name == 'nt' else 'clear')
-
+    # teste_processamento()
     main()

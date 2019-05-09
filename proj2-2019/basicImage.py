@@ -660,5 +660,5 @@ def floyd_steinberg(img, filename='Nao informado!'):
     except Exception as e:
         logger.error('Erro ' + str(e) + ' no loop do Floyd para a imagem: ' + str(filename))
 
-    logger.info("Floyd aplicado corretamente para a imagem: " + str(filename))
+    logger.info("Halftone3x3 aplicado corretamente para a imagem: " + str(filename))
     return new_image
